@@ -1,6 +1,6 @@
 import {useSelector} from 'react-redux';
 import { useRef ,useState,useEffect} from 'react';
-import {getDownloadURL, getStorage,ref} from 'firebase/storage';
+import {getDownloadURL, getStorage,ref, uploadBytesResumable} from 'firebase/storage';
 import {app} from '../firebase';
 
 export default function Profile() {
@@ -9,8 +9,8 @@ export default function Profile() {
   if (!currentUser) {
     return <div>Loading...</div>; // Or any other fallback UI
   }
-
-  const {file,setFile}=useState(undefined);
+  
+  const [file,setFile]=useState(undefined);
   const [filePerc,setFilePerc] =useState(0);
   const [fileUploadError,setFileUploadError] =useState(false);
   const [formData,setFormData] = useState({});
@@ -19,20 +19,20 @@ export default function Profile() {
   // allow read;
   // allow write:if
   // request.resource.size < 2 * 1024 *  1024 &&
-  // request.resource.contentType.matches('.image/.*')
+  // request.resource.contentType.matches('image/.*')
 
   useEffect(
     ()=>{
       if(file){
-        handleFileUpload();
+        handleFileUpload(file);
       }
     
   },[file]  );
-  const handleFileUpload =(file)=>{
+  const handleFileUpload=(file)=>{
     const storage=getStorage(app);
-    const fileName = new Date() +file.name;
+    const fileName = new Date() + file.name;
     const storageRef=ref(storage,fileName);
-    const uploadTask=uploadBytestResumable(storageRef,file);
+    const uploadTask=uploadBytesResumable(storageRef,file);
 
     uploadTask.on('state_changed',
       (snapshot)=>{
@@ -67,8 +67,8 @@ export default function Profile() {
         <button className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>update</button>
       </form>
       <div className='flex justify-between mt-5'>
-      <span className='text-red-700 cursor-pointer'>Sign out</span>
-      <span className='text-red-700 cursor-pointer'>Sign out</span>
+      <span className='text-red-700 cursor-pointer'>Delete User</span>
+      <span className='text-red-700 cursor-pointer'>Sign Out</span>
       </div>
     </div>
     
