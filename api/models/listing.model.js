@@ -34,10 +34,7 @@ const listingSchema=new mongoose.Schema(
             type:Boolean,
             required:true,
         },
-        name:{
-            type:String,
-            required:true,
-        },
+        
         type:{
             type:String,
             required:true,
